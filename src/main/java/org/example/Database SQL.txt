@@ -1,0 +1,32 @@
+/*Drops existing databases with the same name to avoid errors*/
+DROP DATABASE IF EXISTS budget;
+/*Creates database*/
+CREATE DATABASE IF NOT EXISTS budget;
+
+DROP TABLE IF EXISTS expenses, income;
+
+
+CREATE TABLE expenses(expenseID INTEGER  NOT NULL AUTO_INCREMENT,
+title VARCHAR(20),
+category VARCHAR(20),
+amount FLOAT (10,2),
+dateIncurred DATE,
+PRIMARY KEY(expenseID));
+
+CREATE TABLE income(incomeID INTEGER  NOT NULL AUTO_INCREMENT,
+title VARCHAR(20),
+amount FLOAT (10,2),
+dateIncurred DATE,
+PRIMARY KEY(incomeID));
+
+INSERT INTO expenses(expenseID, title, category, amount, dateIncurred)
+VALUES
+(NULL, "Weekly Shop", "Food", 47.50, '2025-01-07'),
+(NULL, "Dinner with Friends", "Food", 63.50, '2025-01-08'),
+(NULL, "Diesel", "Transport", 50, '2025-01-08'),
+(NULL, "Gym Membership", "Fitness", 30, '2025-01-09');
+
+INSERT INTO income(incomeID, title, amount, dateIncurred)
+VALUES
+(NULL, "Birthday", 125, '2025-01-04'),
+(NULL, "BabySitting", 60, '2025-01-05');
