@@ -33,7 +33,7 @@ public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface{
             while (resultSet.next()) {
                 int incomeId = resultSet.getInt("incomeId");
                 String title = resultSet.getString("title");
-                Double amount = resultSet.getDouble("amount");
+                double amount = resultSet.getDouble("amount");
                 String dateIncurred = resultSet.getString("dateIncurred");
                 Income u = new Income(incomeId, title, amount, dateIncurred);
                 incomeList.add(u);
@@ -57,4 +57,59 @@ public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface{
         }
         return incomeList;     // may be empty
     }
+
+
+    /**
+     * Will access and return a total of all income
+     *
+     * @return total of amounts
+     * @throws DAOException
+     */
+    @Override
+    public Double findTotalIncome() throws DAOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Double total = null;
+
+        try {
+            //Get connection object using the getConnection() method inherited
+            // from the super class (MySqlDao.java)
+            connection = this.getConnection();
+
+            //Getting a total from database
+            String query = "SELECT SUM(amount) AS Total FROM income";
+
+            //Returning a total
+            preparedStatement = connection.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
+            //Accessing the total
+            while (resultSet.next()) {
+                total = resultSet.getDouble("Total");
+            }
+
+
+
+        } catch (SQLException e) {
+            throw new DAOException("findTotal() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e){
+                throw new DAOException("FindTotal() " + e.getMessage());
+            }
+        }
+
+        return total;
+    }
+
+
 }

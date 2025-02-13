@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface IncomeDAOInterface {
     public List<Income> findAllIncome() throws DAOException;
+
+    public Double findTotalIncome() throws DAOException;
 }

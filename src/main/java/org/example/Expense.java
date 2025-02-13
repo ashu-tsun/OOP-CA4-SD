@@ -58,6 +58,7 @@ public class Expense {
         this.dateIncurred = dateIncurred;
     }
 
+
     @Override
     public String toString() {
         return "Expense{" +
