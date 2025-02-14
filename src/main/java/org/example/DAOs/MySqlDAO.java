@@ -1,4 +1,6 @@
-package org.example;
+package org.example.DAOs;
+
+import org.example.Exception.DAOException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

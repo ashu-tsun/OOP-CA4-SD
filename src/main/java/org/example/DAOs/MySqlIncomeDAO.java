@@ -1,12 +1,12 @@
-package org.example;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+package org.example.DAOs;
+import org.example.Exception.DAOException;
+import org.example.DTOs.Income;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface{
+public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface {
     /**
      * Will access and return a List of all users in User database table
      * @return List of task objects
@@ -111,5 +111,90 @@ public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface{
         return total;
     }
 
+    /**
+     * Will access and add an income
+     *
+     * @return void
+     * @throws DAOException
+     */
+    @Override
+    public void addIncome(String title, double amount, String date) throws DAOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            //Get connection object using the getConnection() method inherited
+            // from the super class (MySqlDao.java)
+            connection = this.getConnection();
+
+            //Creating structure for added income
+            String query = "INSERT INTO income VALUES (null,?,?,?,?)";
+
+            preparedStatement = connection.prepareStatement(query);
+
+            //Setting the statement parameters to the values given in method
+            preparedStatement.setString(1, title);
+            preparedStatement.setDouble(3,amount);
+            preparedStatement.setDate(4, Date.valueOf(date));
+            //Updating database
+            preparedStatement.executeUpdate();
+
+
+        } catch (SQLException e) {
+            throw new DAOException("addIncome() " + e.getMessage());
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e){
+                throw new DAOException("addIncome() " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Will access and delete an income
+     *
+     * @return void
+     * @throws DAOException
+     */
+    @Override
+    public void deleteIncome(int id) throws DAOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            //Get connection object using the getConnection() method inherited
+            // from the super class (MySqlDao.java)
+            connection = this.getConnection();
+
+            //Preparing delete statement
+            String query = "DELETE FROM income WHERE incomeId = ?";
+
+            preparedStatement = connection.prepareStatement(query);
+            //Setting the id in prepared query to the id given
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+
+
+        } catch (SQLException e) {
+            throw new DAOException("deleteIncome() " + e.getMessage());
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e){
+                throw new DAOException("deleteIncome() " + e.getMessage());
+            }
+        }
+    }
 
 }

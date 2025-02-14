@@ -1,5 +1,13 @@
 package org.example;
 
+import org.example.DAOs.ExpenseDAOInterface;
+import org.example.DAOs.IncomeDAOInterface;
+import org.example.DAOs.MySqlExpensesDAO;
+import org.example.DAOs.MySqlIncomeDAO;
+import org.example.DTOs.Expense;
+import org.example.DTOs.Income;
+import org.example.Exception.DAOException;
+
 import java.util.List;
 
 public class Main {
@@ -75,6 +83,42 @@ public class Main {
             System.out.println("\nCall findTotalIncome()");
             double totalIncome = IIncomeDao.findTotalIncome();
             System.out.println("Total Expenses: " + totalIncome);
+
+
+            //Part Five
+            System.out.println("\nCall addIncome()");
+            String title2 ="Job";
+            double amount2 = 520.50;
+            String date2 = "2025-02-16";
+            //IIncomeDao.addIncome(title2,amount2,date2);
+            System.out.println("\nAdded income (" + title2 + ", " + amount2 + ", " + date2 +")");
+
+            //Showing Part Five Worked
+            System.out.println("\nCall findAllIncome() to show update");
+            income = IIncomeDao.findAllIncome();     // call a method in the DAO
+
+            if (income.isEmpty())
+                System.out.println("There is no income");
+            else {
+                for (Income i : income)
+                    System.out.println("Income: " + i.toString());
+            }
+
+            //Part Six
+            int id2 =2;
+            //IIncomeDao.deleteIncome(id);
+            System.out.println("\nDeleted income with id " + id2);
+
+            //Showing Part Six Worked
+            System.out.println("\nCall findAllExpenses() to show update");
+            income = IIncomeDao.findAllIncome();     // call a method in the DAO
+
+            if (income.isEmpty())
+                System.out.println("There is no income");
+            else {
+                for (Income i : income)
+                    System.out.println("Income: " + i.toString());
+            }
 
         } catch (DAOException e) {
             // This code is executed when the DAO layer throws an exception.

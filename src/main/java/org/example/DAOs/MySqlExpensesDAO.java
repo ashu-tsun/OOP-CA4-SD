@@ -1,4 +1,7 @@
-package org.example;
+package org.example.DAOs;
+
+import org.example.Exception.DAOException;
+import org.example.DTOs.Expense;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -118,7 +121,7 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
      * @throws DAOException
      */
     @Override
-    public void addExpense(String title, String category, Double amount, String date) throws DAOException {
+    public void addExpense(String title, String category, double amount, String date) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -164,7 +167,7 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
      * @throws DAOException
      */
     @Override
-    public void deleteExpense(Integer id) throws DAOException {
+    public void deleteExpense(int id) throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
