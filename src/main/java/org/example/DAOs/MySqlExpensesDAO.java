@@ -25,12 +25,13 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
                 // from the super class (MySqlDao.java)
                 connection = this.getConnection();
 
-
+                //Prepare query
                 String query = "SELECT * FROM expenses";
 
                 preparedStatement = connection.prepareStatement(query);
                 //Using a PreparedStatement to execute SQL...
                 resultSet = preparedStatement.executeQuery();
+                //Taking in the data and assigning it to an Expense, then placing it in a list
                 while (resultSet.next()) {
                     int expenseId = resultSet.getInt("expenseId");
                     String title = resultSet.getString("title");
@@ -40,7 +41,7 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
                     Expense u = new Expense(expenseId, title, category, amount, dateIncurred);
                     expenseList.add(u);
                 }
-
+            //Exception handling
             } catch (SQLException e) {
                 throw new DAOException("findAllExpensesResultSet() " + e.getMessage());
             } finally {
@@ -59,7 +60,7 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
                 }
             }
 
-            return expenseList;     // may be empty
+            return expenseList;     // return the list
         }
 
     /**
@@ -69,11 +70,11 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
      * @throws DAOException
      */
     @Override
-    public Double findTotalExpenses() throws DAOException {
+    public double findTotalExpenses() throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        Double total = null;
+        double total = 0.0;
 
         try {
             //Get connection object using the getConnection() method inherited
@@ -130,7 +131,7 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
             // from the super class (MySqlDao.java)
             connection = this.getConnection();
 
-            //Creating structure for added expense
+            //Creating structure for adding expense
             String query = "INSERT INTO expenses VALUES (null,?,?,?,?)";
 
             preparedStatement = connection.prepareStatement(query);
@@ -182,6 +183,7 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
             preparedStatement = connection.prepareStatement(query);
             //Setting the id in prepared query to the id given
             preparedStatement.setInt(1, id);
+            //Updating the database
             preparedStatement.executeUpdate();
 
 
@@ -201,7 +203,59 @@ public class MySqlExpensesDAO extends MySqlDAO implements ExpenseDAOInterface {
         }
     }
 
+    /**
+     * Will access and retrieve total expenses for specified month
+     *
+     * @return total of expenses
+     * @throws DAOException
+     */
+    @Override
+    public double findAllExpensesMonth(int month) throws DAOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        double total = 0.0;
 
+        try {
+            //Get connection object using the getConnection() method inherited
+            // from the super class (MySqlDao.java)
+            connection = this.getConnection();
+
+            //Preparing query
+            //Getting a total from database for the month specified
+            String query = "SELECT SUM(amount) AS Total FROM expenses WHERE MONTH(dateIncurred) = ?";
+
+            preparedStatement = connection.prepareStatement(query);
+            //Inserting specified month
+            preparedStatement.setInt(1, month);
+
+            resultSet = preparedStatement.executeQuery();
+            //Accessing the total
+            while (resultSet.next()) {
+                total = resultSet.getDouble("Total");
+            }
+
+
+        } catch (SQLException e) {
+            throw new DAOException("findAllExpensesMonth() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e){
+                throw new DAOException("findAllExpensesMonth() " + e.getMessage());
+            }
+        }
+
+        return total;
+    }
 
 
 }

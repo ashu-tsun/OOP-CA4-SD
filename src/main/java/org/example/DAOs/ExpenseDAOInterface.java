@@ -9,9 +9,11 @@ public interface ExpenseDAOInterface {
 
     public List<Expense> findAllExpenses() throws DAOException;
 
-    public Double findTotalExpenses() throws DAOException;
+    public double findTotalExpenses() throws DAOException;
 
     public void addExpense(String title, String category, double amount, String date) throws DAOException;
 
     public void deleteExpense(int id) throws DAOException;
+
+    public double findAllExpensesMonth(int month) throws DAOException;
 }

@@ -31,11 +31,11 @@ public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface {
             //Using a PreparedStatement to execute SQL...
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                int incomeId = resultSet.getInt("incomeId");
+                int incomeID = resultSet.getInt("incomeID");
                 String title = resultSet.getString("title");
                 double amount = resultSet.getDouble("amount");
                 String dateIncurred = resultSet.getString("dateIncurred");
-                Income u = new Income(incomeId, title, amount, dateIncurred);
+                Income u = new Income(incomeID, title, amount, dateIncurred);
                 incomeList.add(u);
             }
         } catch (SQLException e) {
@@ -66,11 +66,11 @@ public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface {
      * @throws DAOException
      */
     @Override
-    public Double findTotalIncome() throws DAOException {
+    public double findTotalIncome() throws DAOException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        Double total = null;
+        double total = 0.0;
 
         try {
             //Get connection object using the getConnection() method inherited
@@ -185,6 +185,7 @@ public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface {
             throw new DAOException("deleteIncome() " + e.getMessage());
         } finally {
             try {
+
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
@@ -195,6 +196,60 @@ public class MySqlIncomeDAO extends MySqlDAO implements IncomeDAOInterface {
                 throw new DAOException("deleteIncome() " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * Will access and retrieve total income for specified month
+     *
+     * @return total
+     * @throws DAOException
+     */
+    @Override
+    public double findAllIncomeMonth(int month) throws DAOException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        double total = 0.0;
+
+        try {
+            //Get connection object using the getConnection() method inherited
+            // from the super class (MySqlDao.java)
+            connection = this.getConnection();
+
+            //Preparing query
+            //Getting a total from database for the month specified
+            String query = "SELECT SUM(amount) AS Total FROM income WHERE MONTH(dateIncurred) = ?";
+
+            preparedStatement = connection.prepareStatement(query);
+            //Inserting month
+            preparedStatement.setInt(1, month);
+
+            resultSet = preparedStatement.executeQuery();
+            //Accessing the total
+            while (resultSet.next()) {
+                total = resultSet.getDouble("Total");
+            }
+
+
+        } catch (SQLException e) {
+            throw new DAOException("findAllIncomeMonth() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e){
+                throw new DAOException("findAllIncomeMonth() " + e.getMessage());
+            }
+        }
+
+        return total;
     }
 
 }
